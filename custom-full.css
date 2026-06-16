@@ -14,13 +14,25 @@
     --mode-visualblock: #c64600;
     --mode-easymotion:  #62a0ea;
     --mode-surround:    #00a399;
-    --mode-search:      #d9820a;
+    --mode-search:      #fc2fa0;
     --mode-disabled:    #a51d2d;
 
     /* ── Animation ────────────────────────────────────────────── */
     --mode-speed:  150ms;
     --mode-ease:   cubic-bezier(0.4, 0, 0.2, 1);
-    --glow-alpha:  0.45;
+    --glow-mix:    45%;
+
+    /* ── Scrollbars ───────────────────────────────────────────── */
+    --scrollbar-thumb:  rgba(255, 255, 255, 0.15);
+    --scrollbar-hover:  rgba(255, 255, 255, 0.35);
+
+    /* ── Tabs ─────────────────────────────────────────────────── */
+    --tab-active-border: var(--mode-insert);
+    --tab-active-bg:     rgba(255, 255, 255, 0.04);
+
+    /* ── Sidebar ──────────────────────────────────────────────── */
+    --sidebar-hover-bg:  rgba(255, 255, 255, 0.05);
+    --sidebar-active-bg: rgba(255, 255, 255, 0.09);
 }
 
 /* ── Smooth mode transitions ──────────────────────────────────── */
@@ -36,7 +48,7 @@
 #workbench\.parts\.statusbar:has([aria-label^=":"]) {
     background-color: var(--mode-search) !important;
     color:            var(--white) !important;
-    box-shadow: 0 -4px 20px rgba(217, 130, 10, var(--glow-alpha)) !important;
+    box-shadow: 0 -4px 20px color-mix(in srgb, var(--mode-search) var(--glow-mix), transparent) !important;
 }
 
 /* ── Normal mode ──────────────────────────────────────────────── */
@@ -44,7 +56,7 @@
 #workbench\.parts\.statusbar:has([aria-label="-- NORMAL --  MULTI CURSOR"]) {
     background-color: var(--mode-normal) !important;
     color:            var(--white) !important;
-    box-shadow: 0 -4px 20px rgba(26, 95, 180, var(--glow-alpha)) !important;
+    box-shadow: 0 -4px 20px color-mix(in srgb, var(--mode-normal) var(--glow-mix), transparent) !important;
 }
 
 /* ── Insert mode ──────────────────────────────────────────────── */
@@ -52,7 +64,7 @@
 #workbench\.parts\.statusbar:has([aria-label="-- INSERT --  MULTI CURSOR"]) {
     background-color: var(--mode-insert) !important;
     color:            var(--white) !important;
-    box-shadow: 0 -4px 20px rgba(38, 162, 105, var(--glow-alpha)) !important;
+    box-shadow: 0 -4px 20px color-mix(in srgb, var(--mode-insert) var(--glow-mix), transparent) !important;
 }
 
 /* ── Replace mode ─────────────────────────────────────────────── */
@@ -60,7 +72,7 @@
 #workbench\.parts\.statusbar:has([aria-label="-- REPLACE --  MULTI CURSOR"]) {
     background-color: var(--mode-replace) !important;
     color:            var(--white) !important;
-    box-shadow: 0 -4px 20px rgba(192, 28, 40, var(--glow-alpha)) !important;
+    box-shadow: 0 -4px 20px color-mix(in srgb, var(--mode-replace) var(--glow-mix), transparent) !important;
 }
 
 /* ── Visual / Visual Line ─────────────────────────────────────── */
@@ -68,17 +80,17 @@
 #workbench\.parts\.statusbar:has([aria-label="-- VISUAL LINE --"]),
 #workbench\.parts\.statusbar:has([aria-label="-- VISUAL --  MULTI CURSOR"]),
 #workbench\.parts\.statusbar:has([aria-label="-- VISUAL LINE --  MULTI CURSOR"]) {
-    background-color: var(--mode-visual) !important;
+    background-color: var(--mode-visualblock) !important;
     color:            var(--white) !important;
-    box-shadow: 0 -4px 20px rgba(129, 61, 156, var(--glow-alpha)) !important;
+    box-shadow: 0 -4px 20px color-mix(in srgb, var(--mode-visualblock) var(--glow-mix), transparent) !important;
 }
 
 /* ── Visual Block ─────────────────────────────────────────────── */
 #workbench\.parts\.statusbar:has([aria-label="-- VISUAL BLOCK --"]),
 #workbench\.parts\.statusbar:has([aria-label="-- VISUAL BLOCK --  MULTI CURSOR"]) {
-    background-color: var(--mode-visualblock) !important;
+    background-color: var(--mode-visual) !important;
     color:            var(--white) !important;
-    box-shadow: 0 -4px 20px rgba(198, 70, 0, var(--glow-alpha)) !important;
+    box-shadow: 0 -4px 20px color-mix(in srgb, var(--mode-visual) var(--glow-mix), transparent) !important;
 }
 
 /* ── EasyMotion ───────────────────────────────────────────────── */
@@ -86,7 +98,7 @@
 #workbench\.parts\.statusbar:has([aria-label="-- EASYMOTION --  MULTI CURSOR"]) {
     background-color: var(--mode-easymotion) !important;
     color:            var(--black) !important;
-    box-shadow: 0 -4px 20px rgba(98, 160, 234, var(--glow-alpha)) !important;
+    box-shadow: 0 -4px 20px color-mix(in srgb, var(--mode-easymotion) var(--glow-mix), transparent) !important;
 }
 
 /* ── Surround Input ───────────────────────────────────────────── */
@@ -94,14 +106,14 @@
 #workbench\.parts\.statusbar:has([aria-label="-- SURROUND INPUT --  MULTI CURSOR"]) {
     background-color: var(--mode-surround) !important;
     color:            var(--black) !important;
-    box-shadow: 0 -4px 20px rgba(0, 163, 153, var(--glow-alpha)) !important;
+    box-shadow: 0 -4px 20px color-mix(in srgb, var(--mode-surround) var(--glow-mix), transparent) !important;
 }
 
 /* ── Vim disabled ─────────────────────────────────────────────── */
 #workbench\.parts\.statusbar:has([aria-label="-- VIM: DISABLED --"]) {
     background-color: var(--mode-disabled) !important;
     color:            var(--white) !important;
-    box-shadow: 0 -4px 20px rgba(165, 29, 45, var(--glow-alpha)) !important;
+    box-shadow: 0 -4px 20px color-mix(in srgb, var(--mode-disabled) var(--glow-mix), transparent) !important;
 }
 
 /* ── Quick Input Widget (Command Palette) ─────────────────────── */
@@ -132,4 +144,124 @@
         0 8px 24px  rgba(0, 0, 0, 0.3),
         0 32px 64px rgba(0, 0, 0, 0.22) !important;
     animation: palette-in 180ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+/* ================================================================
+   Scrollbars
+   ================================================================ */
+
+::-webkit-scrollbar {
+    width:  4px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background:    var(--scrollbar-thumb);
+    border-radius: 4px;
+    transition:    background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-hover);
+}
+
+/* Monaco's own scrollbar overlay (editor + terminal) */
+.monaco-scrollable-element > .scrollbar > .slider {
+    background:    var(--scrollbar-thumb) !important;
+    border-radius: 4px !important;
+    transition:    background 0.2s ease, opacity 0.2s ease !important;
+}
+
+.monaco-scrollable-element > .scrollbar > .slider:hover {
+    background: var(--scrollbar-hover) !important;
+}
+
+/* ================================================================
+   Tab Bar
+   ================================================================ */
+
+/* Base tab — smooth transitions */
+.tabs-container .tab {
+    transition:
+        background-color var(--mode-speed) var(--mode-ease),
+        border-color     var(--mode-speed) var(--mode-ease),
+        opacity          var(--mode-speed) var(--mode-ease) !important;
+}
+
+/* Inactive tabs: slightly dimmed */
+.tabs-container .tab:not(.active) {
+    opacity: 0.65 !important;
+}
+
+.tabs-container .tab:not(.active):hover {
+    opacity:          1 !important;
+    background-color: var(--tab-active-bg) !important;
+}
+
+/* Active tab: green underline indicator */
+.tabs-container .tab.active {
+    opacity:          1 !important;
+    background-color: var(--tab-active-bg) !important;
+    border-bottom:    2px solid var(--tab-active-border) !important;
+    border-top:       2px solid transparent !important;
+}
+
+/* Hide close button until tab is hovered */
+.tabs-container .tab .codicon-close {
+    opacity:    0 !important;
+    transition: opacity 0.15s ease !important;
+}
+
+.tabs-container .tab:hover .codicon-close,
+.tabs-container .tab.active .codicon-close {
+    opacity: 1 !important;
+}
+
+/* Soften the tab bar bottom border */
+.tabs-and-actions-container {
+    box-shadow:    0 1px 0 rgba(255, 255, 255, 0.06) !important;
+    border-bottom: none !important;
+}
+
+/* ================================================================
+   Sidebar / Explorer
+   ================================================================ */
+
+/* File tree rows: smooth hover */
+.explorer-viewlet .monaco-list-row,
+.monaco-list .monaco-list-row {
+    border-radius: 4px !important;
+    transition:    background-color 0.12s ease !important;
+}
+
+.explorer-viewlet .monaco-list-row:hover,
+.monaco-list .monaco-list-row:hover {
+    background-color: var(--sidebar-hover-bg) !important;
+}
+
+/* Selected / focused row: subtle highlight + left border accent */
+.explorer-viewlet .monaco-list-row.selected,
+.explorer-viewlet .monaco-list-row.focused,
+.monaco-list:focus .monaco-list-row.focused {
+    background-color: var(--sidebar-active-bg) !important;
+    border-left:      2px solid var(--mode-normal) !important;
+    padding-left:     calc(var(--vscode-tree-indent-guides-indent, 8px) - 2px) !important;
+}
+
+/* Indent guides: barely there */
+.monaco-tl-twistie,
+.indent-guide {
+    opacity: 0.4 !important;
+}
+
+/* ================================================================
+   Editor Group Focus Glow
+   ================================================================ */
+
+.editor-group-container.active {
+    box-shadow: inset 0 0 0 1px rgba(98, 160, 234, 0.15) !important;
 }
