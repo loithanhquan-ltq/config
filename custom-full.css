@@ -1,0 +1,135 @@
+/* ================================================================
+   VS Code — Vim Mode Status Bar  ·  Enhanced
+   ================================================================ */
+
+:root {
+    --white: #ffffff;
+    --black: #000000;
+
+    /* ── Mode colors ─────────────────────────────────────────── */
+    --mode-normal:      #1a5fb4;
+    --mode-insert:      #26a269;
+    --mode-replace:     #c01c28;
+    --mode-visual:      #813d9c;
+    --mode-visualblock: #c64600;
+    --mode-easymotion:  #62a0ea;
+    --mode-surround:    #00a399;
+    --mode-search:      #d9820a;
+    --mode-disabled:    #a51d2d;
+
+    /* ── Animation ────────────────────────────────────────────── */
+    --mode-speed:  150ms;
+    --mode-ease:   cubic-bezier(0.4, 0, 0.2, 1);
+    --glow-alpha:  0.45;
+}
+
+/* ── Smooth mode transitions ──────────────────────────────────── */
+#workbench\.parts\.statusbar {
+    transition:
+        background-color var(--mode-speed) var(--mode-ease),
+        color            var(--mode-speed) var(--mode-ease),
+        box-shadow       var(--mode-speed) var(--mode-ease) !important;
+}
+
+/* ── Search / command-line input  ( / and : ) ─────────────────── */
+#workbench\.parts\.statusbar:has([aria-label^="/"]),
+#workbench\.parts\.statusbar:has([aria-label^=":"]) {
+    background-color: var(--mode-search) !important;
+    color:            var(--white) !important;
+    box-shadow: 0 -4px 20px rgba(217, 130, 10, var(--glow-alpha)) !important;
+}
+
+/* ── Normal mode ──────────────────────────────────────────────── */
+#workbench\.parts\.statusbar:has([aria-label="-- NORMAL --"]),
+#workbench\.parts\.statusbar:has([aria-label="-- NORMAL --  MULTI CURSOR"]) {
+    background-color: var(--mode-normal) !important;
+    color:            var(--white) !important;
+    box-shadow: 0 -4px 20px rgba(26, 95, 180, var(--glow-alpha)) !important;
+}
+
+/* ── Insert mode ──────────────────────────────────────────────── */
+#workbench\.parts\.statusbar:has([aria-label="-- INSERT --"]),
+#workbench\.parts\.statusbar:has([aria-label="-- INSERT --  MULTI CURSOR"]) {
+    background-color: var(--mode-insert) !important;
+    color:            var(--white) !important;
+    box-shadow: 0 -4px 20px rgba(38, 162, 105, var(--glow-alpha)) !important;
+}
+
+/* ── Replace mode ─────────────────────────────────────────────── */
+#workbench\.parts\.statusbar:has([aria-label="-- REPLACE --"]),
+#workbench\.parts\.statusbar:has([aria-label="-- REPLACE --  MULTI CURSOR"]) {
+    background-color: var(--mode-replace) !important;
+    color:            var(--white) !important;
+    box-shadow: 0 -4px 20px rgba(192, 28, 40, var(--glow-alpha)) !important;
+}
+
+/* ── Visual / Visual Line ─────────────────────────────────────── */
+#workbench\.parts\.statusbar:has([aria-label="-- VISUAL --"]),
+#workbench\.parts\.statusbar:has([aria-label="-- VISUAL LINE --"]),
+#workbench\.parts\.statusbar:has([aria-label="-- VISUAL --  MULTI CURSOR"]),
+#workbench\.parts\.statusbar:has([aria-label="-- VISUAL LINE --  MULTI CURSOR"]) {
+    background-color: var(--mode-visual) !important;
+    color:            var(--white) !important;
+    box-shadow: 0 -4px 20px rgba(129, 61, 156, var(--glow-alpha)) !important;
+}
+
+/* ── Visual Block ─────────────────────────────────────────────── */
+#workbench\.parts\.statusbar:has([aria-label="-- VISUAL BLOCK --"]),
+#workbench\.parts\.statusbar:has([aria-label="-- VISUAL BLOCK --  MULTI CURSOR"]) {
+    background-color: var(--mode-visualblock) !important;
+    color:            var(--white) !important;
+    box-shadow: 0 -4px 20px rgba(198, 70, 0, var(--glow-alpha)) !important;
+}
+
+/* ── EasyMotion ───────────────────────────────────────────────── */
+#workbench\.parts\.statusbar:has([aria-label="-- EASYMOTION --"]),
+#workbench\.parts\.statusbar:has([aria-label="-- EASYMOTION --  MULTI CURSOR"]) {
+    background-color: var(--mode-easymotion) !important;
+    color:            var(--black) !important;
+    box-shadow: 0 -4px 20px rgba(98, 160, 234, var(--glow-alpha)) !important;
+}
+
+/* ── Surround Input ───────────────────────────────────────────── */
+#workbench\.parts\.statusbar:has([aria-label="-- SURROUND INPUT --"]),
+#workbench\.parts\.statusbar:has([aria-label="-- SURROUND INPUT --  MULTI CURSOR"]) {
+    background-color: var(--mode-surround) !important;
+    color:            var(--black) !important;
+    box-shadow: 0 -4px 20px rgba(0, 163, 153, var(--glow-alpha)) !important;
+}
+
+/* ── Vim disabled ─────────────────────────────────────────────── */
+#workbench\.parts\.statusbar:has([aria-label="-- VIM: DISABLED --"]) {
+    background-color: var(--mode-disabled) !important;
+    color:            var(--white) !important;
+    box-shadow: 0 -4px 20px rgba(165, 29, 45, var(--glow-alpha)) !important;
+}
+
+/* ── Quick Input Widget (Command Palette) ─────────────────────── */
+@keyframes palette-in {
+    from {
+        opacity:   0;
+        transform: translateX(-50%) translateY(-6px) scale(0.98);
+    }
+    to {
+        opacity:   1;
+        transform: translateX(-50%) translateY(0)    scale(1);
+    }
+}
+
+.quick-input-widget {
+    position:          absolute;
+    width:             640px;
+    z-index:           2550;
+    left:              50%;
+    top:               20% !important;
+    transform:         translateX(-50%) !important;
+    margin-left:       0 !important;
+    -webkit-app-region: no-drag;
+    border-radius:     10px !important;
+    overflow:          hidden !important;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.07),
+        0 8px 24px  rgba(0, 0, 0, 0.3),
+        0 32px 64px rgba(0, 0, 0, 0.22) !important;
+    animation: palette-in 180ms cubic-bezier(0.2, 0, 0, 1) both;
+}
