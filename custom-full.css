@@ -23,8 +23,10 @@
     --glow-mix:    45%;
 
     /* ── Scrollbars ───────────────────────────────────────────── */
-    --scrollbar-thumb:  rgba(255, 255, 255, 0.15);
-    --scrollbar-hover:  rgba(255, 255, 255, 0.35);
+    --scrollbar-thumb:     rgba(255, 255, 255, 0.15);
+    --scrollbar-hover:     rgba(255, 255, 255, 0.35);
+    --scrollbar-glow-mix:  55%;
+    --scrollbar-tint-mix:  35%;
 
     /* ── Tabs ─────────────────────────────────────────────────── */
     --tab-active-border: var(--mode-insert);
@@ -219,4 +221,339 @@
     padding:       0 6px !important;
     background:    rgba(255, 255, 255, 0.08) !important;
     font-size:     11px !important;
+}
+
+
+/* ================================================================
+   Status Bar — "light source" quad
+   ================================================================
+   The statusbar-wide box-shadow above is the *lit floor* — light that
+   bounced off the mode indicator onto the surrounding bar. This section
+   adds the emitter itself: a small solid quad rendered right next to the
+   mode text, colored and glowing on its own, the way the LTC demo draws
+   the area light's visible rectangle separately from the light it casts
+   on the ground plane.
+   ================================================================ */
+
+/* Shape + glow, shared by every mode: only --light-quad-color changes below */
+.statusbar-item:has([aria-label^="-- "])>.statusbar-item-label::before,
+.statusbar-item:has([aria-label^="/"])>.statusbar-item-label::before,
+.statusbar-item:has([aria-label^=":"])>.statusbar-item-label::before {
+    content:           "";
+    display:           inline-block;
+    width:              8px;
+    height:             8px;
+    margin-right:       6px;
+    border-radius:      2px;
+    flex:               0 0 auto;
+    background-color:  var(--light-quad-color, currentColor);
+    box-shadow:         0 0 6px var(--light-quad-color, transparent);
+    transition:
+        background-color var(--mode-speed) var(--mode-ease),
+        box-shadow        var(--mode-speed) var(--mode-ease);
+}
+
+/* ── Mode → light source color (same aria-labels as the statusbar/scrollbar
+   blocks above) ── */
+
+.statusbar-item:has([aria-label^="/"])>.statusbar-item-label,
+.statusbar-item:has([aria-label^=":"])>.statusbar-item-label {
+    --light-quad-color: var(--mode-search);
+}
+
+.statusbar-item:has([aria-label="-- NORMAL --"])>.statusbar-item-label,
+.statusbar-item:has([aria-label="-- NORMAL --  MULTI CURSOR"])>.statusbar-item-label {
+    --light-quad-color: var(--mode-normal);
+}
+
+.statusbar-item:has([aria-label="-- INSERT --"])>.statusbar-item-label,
+.statusbar-item:has([aria-label="-- INSERT --  MULTI CURSOR"])>.statusbar-item-label {
+    --light-quad-color: var(--mode-insert);
+}
+
+.statusbar-item:has([aria-label="-- REPLACE --"])>.statusbar-item-label,
+.statusbar-item:has([aria-label="-- REPLACE --  MULTI CURSOR"])>.statusbar-item-label {
+    --light-quad-color: var(--mode-replace);
+}
+
+.statusbar-item:has([aria-label="-- VISUAL --"])>.statusbar-item-label,
+.statusbar-item:has([aria-label="-- VISUAL LINE --"])>.statusbar-item-label,
+.statusbar-item:has([aria-label="-- VISUAL --  MULTI CURSOR"])>.statusbar-item-label,
+.statusbar-item:has([aria-label="-- VISUAL LINE --  MULTI CURSOR"])>.statusbar-item-label {
+    /* mirrors the statusbar rule above, which maps Visual/Visual-Line to --mode-visualblock */
+    --light-quad-color: var(--mode-visualblock);
+}
+
+.statusbar-item:has([aria-label="-- VISUAL BLOCK --"])>.statusbar-item-label,
+.statusbar-item:has([aria-label="-- VISUAL BLOCK --  MULTI CURSOR"])>.statusbar-item-label {
+    /* mirrors the statusbar rule above, which maps Visual-Block to --mode-visual */
+    --light-quad-color: var(--mode-visual);
+}
+
+.statusbar-item:has([aria-label="-- EASYMOTION --"])>.statusbar-item-label,
+.statusbar-item:has([aria-label="-- EASYMOTION --  MULTI CURSOR"])>.statusbar-item-label {
+    --light-quad-color: var(--mode-easymotion);
+}
+
+.statusbar-item:has([aria-label="-- SURROUND INPUT --"])>.statusbar-item-label,
+.statusbar-item:has([aria-label="-- SURROUND INPUT --  MULTI CURSOR"])>.statusbar-item-label {
+    --light-quad-color: var(--mode-surround);
+}
+
+.statusbar-item:has([aria-label="-- VIM: DISABLED --"])>.statusbar-item-label {
+    --light-quad-color: var(--mode-disabled);
+}
+
+/* ================================================================
+   Tabs — distance-based falloff from the active tab
+   ================================================================
+   Only the active tab sits directly under the "light" (the current Vim
+   mode's color, full strength). Tabs one and two positions away pick up
+   a progressively fainter bleed of that same color — falloff by literal
+   spatial distance in the tab bar, the way a receiving surface fades the
+   further it sits from an area light.
+   ================================================================ */
+
+/* Mode → ambient tab light color, set once and inherited by every .tab
+   (unlike the statusbar/scrollbar blocks, no per-descendant :has() repeat
+   is needed — custom properties cascade down naturally). */
+
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label^="/"]),
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label^=":"]) {
+    --tab-glow-color: var(--mode-search);
+}
+
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label="-- NORMAL --"]),
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label="-- NORMAL --  MULTI CURSOR"]) {
+    --tab-glow-color: var(--mode-normal);
+}
+
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label="-- INSERT --"]),
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label="-- INSERT --  MULTI CURSOR"]) {
+    --tab-glow-color: var(--mode-insert);
+}
+
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label="-- REPLACE --"]),
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label="-- REPLACE --  MULTI CURSOR"]) {
+    --tab-glow-color: var(--mode-replace);
+}
+
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label="-- VISUAL --"]),
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label="-- VISUAL LINE --"]),
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label="-- VISUAL --  MULTI CURSOR"]),
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label="-- VISUAL LINE --  MULTI CURSOR"]) {
+    /* mirrors the statusbar rule above, which maps Visual/Visual-Line to --mode-visualblock */
+    --tab-glow-color: var(--mode-visualblock);
+}
+
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label="-- VISUAL BLOCK --"]),
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label="-- VISUAL BLOCK --  MULTI CURSOR"]) {
+    /* mirrors the statusbar rule above, which maps Visual-Block to --mode-visual */
+    --tab-glow-color: var(--mode-visual);
+}
+
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label="-- EASYMOTION --"]),
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label="-- EASYMOTION --  MULTI CURSOR"]) {
+    --tab-glow-color: var(--mode-easymotion);
+}
+
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label="-- SURROUND INPUT --"]),
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label="-- SURROUND INPUT --  MULTI CURSOR"]) {
+    --tab-glow-color: var(--mode-surround);
+}
+
+.monaco-workbench:has(#workbench\.parts\.statusbar [aria-label="-- VIM: DISABLED --"]) {
+    --tab-glow-color: var(--mode-disabled);
+}
+
+/* ── Falloff tiers — mutually exclusive by selector, so no additive
+   stacking is needed here: a tab can only ever be the active one, a
+   distance-1 neighbor, or a distance-2 neighbor, never more than one. ── */
+
+.tabs-container>.tab.active {
+    background-color: color-mix(in srgb, var(--tab-glow-color, var(--tab-active-border)) 12%, transparent) !important;
+    box-shadow:
+        inset 0 -2px 0 var(--tab-glow-color, var(--tab-active-border)),
+        0 2px 8px color-mix(in srgb, var(--tab-glow-color, var(--tab-active-border)) 35%, transparent)
+        !important;
+    transition:
+        background-color var(--mode-speed) var(--mode-ease),
+        box-shadow        var(--mode-speed) var(--mode-ease) !important;
+}
+
+/* distance 1: immediate neighbor on either side */
+.tabs-container>.tab.active+.tab,
+.tabs-container>.tab:has(+.tab.active) {
+    background-color: color-mix(in srgb, var(--tab-glow-color, var(--tab-active-border)) 6%, transparent) !important;
+    box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--tab-glow-color, var(--tab-active-border)) 45%, transparent) !important;
+    transition:
+        background-color var(--mode-speed) var(--mode-ease),
+        box-shadow        var(--mode-speed) var(--mode-ease) !important;
+}
+
+/* distance 2: one tab further out */
+.tabs-container>.tab.active+.tab+.tab,
+.tabs-container>.tab:has(+.tab+.tab.active) {
+    background-color: color-mix(in srgb, var(--tab-glow-color, var(--tab-active-border)) 2%, transparent) !important;
+    box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--tab-glow-color, var(--tab-active-border)) 18%, transparent) !important;
+    transition:
+        background-color var(--mode-speed) var(--mode-ease),
+        box-shadow        var(--mode-speed) var(--mode-ease) !important;
+}
+
+/* ================================================================
+   Ambient — scattered background light blobs
+   ================================================================
+   Echoes the demo's floor scattered with 16 fixed-position area lights:
+   a handful of low-opacity radial blobs sit behind the sidebar, panel,
+   and editor surfaces, tinted by the current Vim mode color. Reuses
+   --tab-glow-color (declared once above, already inherited workbench-
+   wide) — no new mode blocks needed.
+
+   Note: the editor's blobs mostly only read on empty/watermark groups
+   and the gaps between split panes, since an open file's own opaque
+   editor.background paints over them — that's a Monaco limitation, not
+   a bug here. Sidebar/panel are list views, so their own background
+   shows through everywhere the list isn't hovered/selected.
+   ================================================================ */
+
+.part.sidebar,
+.part.panel {
+    background-image:
+        radial-gradient(circle 200px at 20% 15%, color-mix(in srgb, var(--tab-glow-color, var(--mode-normal)) 10%, transparent), transparent 70%),
+        radial-gradient(circle 260px at 75% 55%, color-mix(in srgb, var(--tab-glow-color, var(--mode-normal)) 8%,  transparent), transparent 70%),
+        radial-gradient(circle 160px at 35% 90%, color-mix(in srgb, var(--tab-glow-color, var(--mode-normal)) 7%,  transparent), transparent 70%)
+        !important;
+    background-repeat: no-repeat !important;
+}
+
+.part.editor {
+    background-image:
+        radial-gradient(circle 320px at 12% 25%, color-mix(in srgb, var(--tab-glow-color, var(--mode-normal)) 5%, transparent), transparent 70%),
+        radial-gradient(circle 380px at 85% 20%, color-mix(in srgb, var(--tab-glow-color, var(--mode-normal)) 4%, transparent), transparent 70%),
+        radial-gradient(circle 300px at 60% 90%, color-mix(in srgb, var(--tab-glow-color, var(--mode-normal)) 4%, transparent), transparent 70%),
+        radial-gradient(circle 240px at 25% 75%, color-mix(in srgb, var(--tab-glow-color, var(--mode-normal)) 3%, transparent), transparent 70%)
+        !important;
+    background-repeat: no-repeat !important;
+}
+
+/* ================================================================
+   Overview Ruler — ambient glow + signal boost
+   ================================================================
+   HONEST LIMITATION: the ruler is a single <canvas class=
+   "decorationsOverviewRuler">, not individual DOM nodes per decoration
+   (git change / error / search match / etc.) — Monaco draws all of
+   those as raw pixels in one 2D context. CSS has no selector into
+   canvas content, so there is no way to recolor or blend specific
+   marks from here; that compositing is entirely Monaco's own job and
+   already happens before this stylesheet ever sees it.
+
+   What this adds instead: (1) a mode-colored ambient glow bled to the
+   left of the whole strip, so it participates in the same reactive-
+   light language as the scrollbar/tabs/statusbar, and (2) a small
+   saturate/contrast boost on the canvas itself so whatever Monaco
+   already blended there reads a little more vividly. It is a surface-
+   level echo of "multiple signals summing," not a literal one — the
+   literal version isn't reachable without a Monaco extension/API.
+   ================================================================ */
+
+.decorationsOverviewRuler {
+    box-shadow: -6px 0 10px -2px color-mix(in srgb, var(--tab-glow-color, var(--mode-normal)) 45%, transparent) !important;
+    filter:     saturate(1.35) contrast(1.1) !important;
+    transition: box-shadow var(--mode-speed) var(--mode-ease) !important;
+}
+
+/* ================================================================
+   Editor Tabs — rainbow perimeter orbit on select (GHCP-style)
+   ================================================================
+   On file select VS Code adds `.active` to its `.tab`. A small, soft
+   rainbow comet starts at the top-left corner and glides one full lap
+   (~2s) around the tab's border, then fades out. Same mechanism as the
+   Copilot chat "working" border: a conic-gradient masked to a 1px
+   border ring, rotated by animating the registered @property
+   `--tab-anim-angle` from 240deg (top-left corner) to 600deg (= 1 lap).
+   `::before` = crisp 1px ring, `::after` = faint blurred glow.
+
+   Tuned to GHCP's subtlety: hairline ring, short soft comet on a mostly
+   transparent ring, gentle glow, slow glide.
+
+   NOTE: pure CSS fires on "became active", so it also plays once on
+   window load for the already-active tab (no CSS-only way to avoid).
+   Re-fires on every new tab selection.
+   ================================================================ */
+
+@property --tab-anim-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 240deg;        /* = --tab-start-angle (top-left corner) */
+}
+
+:root {
+    --tab-orbit-duration: 2s;     /* 1 full lap */
+    --tab-ring-thickness: 1px;    /* hairline, like GHCP */
+    --tab-glow-thickness: 2px;
+    --tab-glow-blur:      1.5px;
+    --tab-start-angle:    240deg;  /* comet start ≈ top-left corner; raise to
+                                      rotate the start point clockwise */
+}
+
+/* Shared SHORT rainbow-comet gradient: a gentle ~130deg band that fades
+   into transparent on both ends, transparent for the rest of the ring.
+   Rotating the `from` angle carries the small comet around the border. */
+.tabs-container > .tab.active::before,
+.tabs-container > .tab.active::after {
+    content: "";
+    position: absolute;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+        conic-gradient(from var(--tab-anim-angle),
+            transparent 0deg,
+            color-mix(in srgb, #ff5a3b 55%, transparent) 14deg,
+            #ff8a00  34deg,
+            #ffd500  54deg,
+            #35d07a  74deg,
+            #35a8ff  94deg,
+            color-mix(in srgb, #7a5cff 55%, transparent) 112deg,
+            transparent 130deg,
+            transparent 360deg) !important;
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+            mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+}
+
+/* crisp 1px rainbow ring */
+.tabs-container > .tab.active::before {
+    inset: 0;
+    padding: var(--tab-ring-thickness);
+    z-index: 12;
+    animation: tab-ring-orbit var(--tab-orbit-duration) linear 1 forwards;
+}
+
+/* faint blurred glow behind the ring */
+.tabs-container > .tab.active::after {
+    inset: -1px;
+    padding: var(--tab-glow-thickness);
+    z-index: 11;
+    filter: blur(var(--tab-glow-blur));
+    animation: tab-ring-orbit-glow var(--tab-orbit-duration) linear 1 forwards;
+}
+
+/* Both animate the SAME registered angle in lockstep (identical linear
+   timing) so ring + glow stay aligned. Opacity holds, then fades over
+   the last 20% so the effect exits cleanly; `forwards` keeps it gone. */
+@keyframes tab-ring-orbit {
+    0%   { --tab-anim-angle: 240deg; opacity: 1; }   /* top-left corner */
+    80%  { opacity: 1; }
+    100% { --tab-anim-angle: 600deg; opacity: 0; }   /* 240 + 360 = 1 lap */
+}
+@keyframes tab-ring-orbit-glow {
+    0%   { --tab-anim-angle: 240deg; opacity: 0.40; }
+    80%  { opacity: 0.40; }
+    100% { --tab-anim-angle: 600deg; opacity: 0; }
 }
